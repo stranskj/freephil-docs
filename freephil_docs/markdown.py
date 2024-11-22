@@ -1,5 +1,5 @@
 
-def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", description=None, default_scope_description=True):
+def phil_to_markdown(master_scope, title="PHIL Parameters Documentation", description=None, default_scope_description=True):
     """
     Generates a Markdown string from a master PHIL scope.
 
