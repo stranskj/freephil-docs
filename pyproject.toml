@@ -7,7 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "FreePHIL documentation tool"
+name = "freephil_docs"
 authors = [{name = "Jan Stránský", email = "jan.stransky@ibt.cas.cz"}]
 dynamic = ["version"]
 description = "Tool to create nice documentation of PHIL parameters"
