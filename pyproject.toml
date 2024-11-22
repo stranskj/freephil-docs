@@ -19,7 +19,8 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: GNU GPL v3",
   "Operating System :: OS Independent",
-  "Private :: Do Not Upload"
+  "Private :: Do Not Upload",
+  "Topic :: Documentation"
 ]
 dependencies = [
   "freephil",

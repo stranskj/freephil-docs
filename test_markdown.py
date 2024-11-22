@@ -1,5 +1,5 @@
 from freephil import parse
-from freephil_docs.markdown import generate_phil_markdown
+from freephil_docs.markdown import phil_to_markdown
 
 # Example usage
 phil_content = """
@@ -28,7 +28,7 @@ scope_1 {
 master_scope = parse(phil_content)
 
 # Generate Markdown with default scope descriptions enabled
-markdown_output = generate_phil_markdown(
+markdown_output = phil_to_markdown(
     master_scope,
     title="Custom PHIL Documentation",
     description="This document provides a structured overview of PHIL parameters.",
