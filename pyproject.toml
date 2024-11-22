@@ -1,0 +1,36 @@
+[build-system]
+requires = [
+  "setuptools >= 40.9.0",
+  "setuptools-scm",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FreePHIL documentation tool"
+authors = [{name = "Jan Stránský", email = "jan.stransky@ibt.cas.cz"}]
+dynamic = ["version"]
+description = "Tool to create nice documentation of PHIL parameters"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["phil", "freephil"]
+license = {text = "GNU GPL 3"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: GNU GPL v3",
+  "Operating System :: OS Independent",
+  "Private :: Do Not Upload"
+]
+dependencies = [
+  "freephil",
+]
+
+[tool.setuptools]
+packages = ["freephil_docs"]
+
+
+[tool.setuptools.dynamic]
+version = {attr = "freephil_docs.version.version"}
+
+#[project.scripts]
+#  "hil_docs" = "freephil_docs.__main__:main"
