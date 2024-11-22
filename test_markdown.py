@@ -3,12 +3,15 @@ from freephil_docs.markdown import generate_phil_markdown
 
 # Example usage
 phil_content = """
+param_0 = 3.6
+  .type = floats
+  .help = The very first parameter
 scope_1 {
     param_1 = 10
         .type = int
         .help = "An integer parameter used for calculations."
     scope_2 {
-        .help = "This scope contains string parameters for configuration."
+       # .help = "This scope contains string parameters for configuration."
         param_2 = "default"
             .type = str
             .help = "A string parameter specifying the mode of operation."
@@ -16,6 +19,7 @@ scope_1 {
     scope_3 {
         param_3 = 42
             .type = int
+            .multiple = True
     }
 }
 """
@@ -31,4 +35,6 @@ markdown_output = generate_phil_markdown(
     default_scope_description=True
 )
 
+with open('test.md', 'w') as fout:
+    fout.write(markdown_output)
 print(markdown_output)  # To preview the output

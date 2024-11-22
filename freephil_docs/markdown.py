@@ -1,8 +1,5 @@
-from freephil import parse
 
-
-def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", description=None,
-                           default_scope_description=True):
+def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", description=None, default_scope_description=True):
     """
     Generates a Markdown string from a master PHIL scope.
 
@@ -19,18 +16,23 @@ def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", 
 
     # Add general description if provided
     if description:
-        markdown.append(f"{description}\n\n")
+        markdown.append(f"{description}\n")
 
     # Helper function to generate the hierarchical structure for the overview
-    def generate_overview(scope, prefix=""):
+    def generate_overview(scope, prefix="", offset=''):
         overview = []
         for obj in scope.objects:
-            full_name = f"{prefix}.{obj.name}" if prefix else obj.name
             if obj.is_scope:
-                overview.append(f"- {full_name}/")
-                overview.extend(generate_overview(obj, full_name))
+                # Indented scope link in the overview
+                overview.append \
+                    (f"{offset}- [{obj.name}]({prefix + '.' + obj.name if prefix else obj.name})/")
+                # Recursively generate overview for nested scopes
+                overview.extend \
+                    (generate_overview(obj, prefix + '.' + obj.name if prefix else obj.name, offset= f'  {offset}'))
             elif obj.is_definition:
-                overview.append(f"- [{full_name}](#{full_name.replace('.', '-').lower()})")
+                # Indented parameter link in the overview
+                overview.append \
+                    (f"{offset}- [{obj.name}](#{(prefix + '.' + obj.name if prefix else obj.name).replace('.', '-').lower()})")
         return overview
 
     # Generate the overview
@@ -38,7 +40,7 @@ def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", 
     markdown.extend(generate_overview(master_scope))
     markdown.append("\n")
 
-    # Helper function to describe each parameter
+    # Helper function to describe each parameter and scope
     def describe_scope(scope, prefix=""):
         for obj in scope.objects:
             full_name = f"{prefix}.{obj.name}" if prefix else obj.name
@@ -48,16 +50,21 @@ def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", 
                     markdown.append(f"{obj.help}\n\n")
                 elif default_scope_description:
                     markdown.append("*This is a scope containing sub-parameters.*\n\n")
-                describe_scope(obj, full_name)
+                describe_scope(obj, full_name)  # Recursive call to handle nested scopes
             elif obj.is_definition:
                 markdown.append(f"### {full_name}\n")
-                markdown.append(f"- **Type**: {obj.type.name}\n")
-                if obj.default is not None:
-                    markdown.append(f"- **Default**: `{obj.default}`\n")
-                if obj.help:
-                    markdown.append(f"{obj.help}\n\n")
+                markdown.append(f"- **Type**: {obj.type.phil_type}")
+                if obj.words:
+                    words = ' '.join([wrd.value for wrd in obj.words])
+                    markdown.append(f"- **Default**: `{words}`")
+                if obj.multiple:
+                    markdown.append("- **Multiple**: Yes")
                 else:
-                    markdown.append("\n")
+                    markdown.append("- **Multiple**: No")
+                if obj.help:
+                    markdown.append(f"\n{obj.help}\n")
+                else:
+                    markdown.append("")
 
     # Generate detailed descriptions
     markdown.append("## Parameter Descriptions\n")
@@ -67,34 +74,3 @@ def generate_phil_markdown(master_scope, title="PHIL Parameters Documentation", 
     return "\n".join(markdown)
 
 
-# Example usage
-phil_content = """
-scope_1 {
-    param_1 = 10
-        .type = int
-        .help = "An integer parameter used for calculations."
-    scope_2 {
-        .help = "This scope contains string parameters for configuration."
-        param_2 = "default"
-            .type = str
-            .help = "A string parameter specifying the mode of operation."
-    }
-    scope_3 {
-        param_3 = 42
-            .type = int
-    }
-}
-"""
-
-# Parse the PHIL content
-master_scope = parse(phil_content)
-
-# Generate Markdown with default scope descriptions enabled
-markdown_output = generate_phil_markdown(
-    master_scope,
-    title="Custom PHIL Documentation",
-    description="This document provides a structured overview of PHIL parameters.",
-    default_scope_description=True
-)
-
-print(markdown_output)  # To preview the output
